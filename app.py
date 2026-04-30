@@ -9,7 +9,7 @@ init_db()
 inject_styles()
 render_header()
 
-_hero_bg = Path(__file__).parent / "images" / "hero_bg.png"
+_hero_bg = Path(__file__).parent / "images" / "hero_bg.webp"
 if _hero_bg.exists():
     _b64 = base64.b64encode(_hero_bg.read_bytes()).decode()
     _ext = _hero_bg.suffix.lstrip(".")
