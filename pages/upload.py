@@ -24,7 +24,7 @@ st.markdown('<h2>動画でアドバイスをもらう</h2>', unsafe_allow_html=T
 st.markdown('<p class="subtitle">動画をアップロードすると、AIがフォームや技術を分析して具体的なアドバイスを提供します。</p>', unsafe_allow_html=True)
 st.markdown('<hr class="inner-divider">', unsafe_allow_html=True)
 
-SPORTS = ["サッカー", "野球", "短距離走（かけっこ）", "長距離走（マラソン）", "逆上がり", "ピアノ"]
+SPORTS = ["サッカー", "野球", "短距離走（かけっこ）", "長距離走（マラソン）", "逆上がり", "ゴルフ", "トランポリン", "体操", "ダンス", "ピアノ", "ギター"]
 AGE_LABELS = ["未就学児", "小学生", "中学生", "高校生", "大学生", "社会人"]
 
 with st.form("upload_form"):
