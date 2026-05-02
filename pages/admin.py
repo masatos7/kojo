@@ -1,6 +1,6 @@
 import streamlit as st
-from pathlib import Path
 from utils.database import init_db, get_all_advice, delete_advice
+from utils.video_utils import delete_from_storage
 from utils.ui import inject_styles, render_header
 
 st.set_page_config(page_title="管理画面 | KOJO", page_icon="🔧", layout="wide", initial_sidebar_state="collapsed")
@@ -74,10 +74,8 @@ for a in advice_list:
         yes, no = st.columns(2)
         with yes:
             if st.button("はい、削除する", key=f"yes_{a['id']}", type="primary"):
-                for path_key in ("video_path", "thumbnail_path"):
-                    p = Path(a.get(path_key) or "")
-                    if p.exists():
-                        p.unlink()
+                delete_from_storage(a.get("video_path", ""), "videos")
+                delete_from_storage(a.get("thumbnail_path", ""), "thumbnails")
                 delete_advice(a["id"])
                 st.session_state.pop(f"confirm_{a['id']}", None)
                 st.success(f"ID {a['id']} を削除しました。")

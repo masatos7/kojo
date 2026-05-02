@@ -43,10 +43,13 @@ st.markdown('<hr class="inner-divider">', unsafe_allow_html=True)
 
 # 動画
 video_path = advice.get("video_path", "")
-if video_path and Path(video_path).exists():
+if video_path:
     st.subheader("アップロード動画")
-    with open(video_path, "rb") as f:
-        st.video(f.read())
+    if video_path.startswith("http"):
+        st.video(video_path)
+    elif Path(video_path).exists():
+        with open(video_path, "rb") as f:
+            st.video(f.read())
 
 # アドバイス
 st.subheader("アドバイス")

@@ -35,8 +35,12 @@ public_advice = get_public_advice()
 
 
 def _img_src(thumb_path: str) -> str:
-    p = Path(thumb_path) if thumb_path else None
-    if p and p.exists():
+    if not thumb_path:
+        return "https://placehold.co/320x180/64748b/ffffff?text=No+Thumbnail"
+    if thumb_path.startswith("http"):
+        return thumb_path
+    p = Path(thumb_path)
+    if p.exists():
         b64 = base64.b64encode(p.read_bytes()).decode()
         return f"data:image/jpeg;base64,{b64}"
     return "https://placehold.co/320x180/64748b/ffffff?text=No+Thumbnail"

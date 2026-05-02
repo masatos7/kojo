@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.database import init_db, insert_advice
-from utils.video_utils import save_uploaded_video, extract_thumbnail
+from utils.video_utils import save_uploaded_video, extract_thumbnail, upload_to_storage
 from utils.gemini_client import analyze_video
 from utils.ui import inject_styles, render_header
 
@@ -56,14 +56,14 @@ if submitted:
         st.stop()
 
     with st.spinner("動画を保存中..."):
-        video_path = save_uploaded_video(video_file)
-        thumbnail_path = extract_thumbnail(video_path)
+        temp_video = save_uploaded_video(video_file)
+        temp_thumb = extract_thumbnail(temp_video)
 
     with st.spinner("AIが動画を分析中です。しばらくお待ちください...（1〜2分かかる場合があります）"):
         try:
             advice_text, practice_menu = analyze_video(
                 api_key=api_key,
-                video_path=video_path,
+                video_path=temp_video,
                 sport=sport,
                 age_label=age,
             )
@@ -71,12 +71,18 @@ if submitted:
             st.error(f"分析中にエラーが発生しました: {e}")
             st.stop()
 
+    with st.spinner("ストレージにアップロード中..."):
+        video_url = upload_to_storage(temp_video, "videos")
+        thumb_url = upload_to_storage(temp_thumb, "thumbnails")
+        temp_video.unlink(missing_ok=True)
+        temp_thumb.unlink(missing_ok=True)
+
     public_flag = is_public.startswith("公開")
     advice_id = insert_advice(
         sport=sport,
         age=age,
-        video_path=video_path,
-        thumbnail_path=thumbnail_path,
+        video_path=video_url,
+        thumbnail_path=thumb_url,
         advice_text=advice_text,
         practice_menu=practice_menu,
         is_public=public_flag,
