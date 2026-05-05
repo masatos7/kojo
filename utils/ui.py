@@ -1,5 +1,5 @@
+import base64
 import streamlit as st
-import streamlit.components.v1 as components
 
 _CSS = """
 <style>
@@ -104,7 +104,7 @@ def inject_styles():
 
 
 def render_header():
-    components.html("""<!DOCTYPE html>
+    _html = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -186,4 +186,6 @@ function go(u){
 })();
 </script>
 </body>
-</html>""", height=60, scrolling=False)
+</html>"""
+    _src = "data:text/html;base64," + base64.b64encode(_html.encode()).decode()
+    st.iframe(_src, height=60, scrolling=False)
