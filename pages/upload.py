@@ -33,7 +33,7 @@ with st.form("upload_form"):
     video_file = st.file_uploader(
         "動画ファイルをアップロード",
         type=["mp4", "mov", "avi", "webm", "mkv"],
-        help="最大 200MB まで対応しています",
+        help="最大 50MB まで対応しています",
     )
     is_public = st.radio(
         "公開設定",
