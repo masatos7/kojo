@@ -44,9 +44,15 @@ with st.form("upload_form"):
 
 st.markdown('</div>', unsafe_allow_html=True)
 
+MAX_FILE_MB = 50
+
 if submitted:
     if video_file is None:
         st.error("動画ファイルを選択してください。")
+        st.stop()
+
+    if video_file.size > MAX_FILE_MB * 1024 * 1024:
+        st.error(f"ファイルサイズが大きすぎます（上限 {MAX_FILE_MB}MB）。動画を短くするか圧縮してから再度お試しください。")
         st.stop()
 
     try:
