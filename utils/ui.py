@@ -187,5 +187,9 @@ function go(u){
 </script>
 </body>
 </html>"""
-    _src = "data:text/html;base64," + base64.b64encode(_html.encode()).decode()
-    st.iframe(_src, height=60, scrolling=False)
+    try:
+        _src = "data:text/html;base64," + base64.b64encode(_html.encode()).decode()
+        st.iframe(_src, height=60, scrolling=False)
+    except AttributeError:
+        import streamlit.components.v1 as components
+        components.html(_html, height=60, scrolling=False)
