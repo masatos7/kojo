@@ -6,6 +6,9 @@ textColor = "#1A1A1A"
 primaryColor = "#2563EB"
 font = "sans serif"
 
+[server]
+maxUploadSize = 50
+
 [client]
 showSidebarNavigation = false
 
