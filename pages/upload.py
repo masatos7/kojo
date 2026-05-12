@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.database import init_db, insert_advice
-from utils.video_utils import save_uploaded_video, extract_thumbnail, upload_to_storage
+from utils.video_utils import save_uploaded_video, extract_thumbnail, upload_to_storage, apply_face_mosaic
 from utils.gemini_client import analyze_video
 from utils.ui import inject_styles, render_header
 
@@ -36,6 +36,8 @@ with st.form("upload_form"):
         type=["mp4", "mov", "avi", "webm", "mkv"],
         help="最大 50MB まで対応しています",
     )
+    apply_mosaic = st.checkbox("顔にモザイクをかける")
+    st.caption("動画内の顔を自動検出してモザイク処理します。動画の長さによっては数分かかる場合があります。")
     is_public = st.radio(
         "公開設定",
         ["公開（みんなに見せる）", "非公開（自分だけ）"],
@@ -64,6 +66,14 @@ if submitted:
 
     with st.spinner("動画を保存中..."):
         temp_video = save_uploaded_video(video_file)
+
+    if apply_mosaic:
+        with st.spinner("顔を検出してモザイクをかけています。しばらくお待ちください..."):
+            mosaiced = apply_face_mosaic(temp_video)
+            temp_video.unlink(missing_ok=True)
+            temp_video = mosaiced
+
+    with st.spinner("サムネイルを生成中..."):
         temp_thumb = extract_thumbnail(temp_video)
 
     with st.spinner("AIが動画を分析中です。しばらくお待ちください...（1〜2分かかる場合があります）"):

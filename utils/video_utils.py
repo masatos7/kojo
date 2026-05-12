@@ -107,6 +107,41 @@ def _get_video_rotation(video_path: Path) -> int:
     return 0
 
 
+def apply_face_mosaic(video_path: Path) -> Path:
+    """動画の顔を検出してモザイクをかけた新しい動画を返す。"""
+    import cv2
+
+    face_cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+    )
+
+    cap = cv2.VideoCapture(str(video_path))
+    fps = cap.get(cv2.CAP_PROP_FPS) or 30
+    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    TEMP_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = TEMP_DIR / f"{video_path.stem}_mosaic.mp4"
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    out = cv2.VideoWriter(str(out_path), fourcc, fps, (w, h))
+
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        for (x, y, fw, fh) in faces:
+            roi = frame[y:y + fh, x:x + fw]
+            small = cv2.resize(roi, (max(1, fw // 10), max(1, fh // 10)), interpolation=cv2.INTER_LINEAR)
+            frame[y:y + fh, x:x + fw] = cv2.resize(small, (fw, fh), interpolation=cv2.INTER_NEAREST)
+        out.write(frame)
+
+    cap.release()
+    out.release()
+    return out_path
+
+
 def extract_thumbnail(video_path: Path) -> Path:
     """動画の最初のフレームをサムネールとして保存し、ローカル Path を返す。"""
     TEMP_DIR.mkdir(parents=True, exist_ok=True)
