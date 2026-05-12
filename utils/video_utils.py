@@ -110,6 +110,7 @@ def _get_video_rotation(video_path: Path) -> int:
 def apply_face_mosaic(video_path: Path) -> Path:
     """動画の顔を検出してモザイクをかけた新しい動画を返す。"""
     import cv2
+    import subprocess
 
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
@@ -121,9 +122,10 @@ def apply_face_mosaic(video_path: Path) -> Path:
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     TEMP_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = TEMP_DIR / f"{video_path.stem}_mosaic.mp4"
+    # OpenCV の中間ファイル（mp4v）
+    raw_path = TEMP_DIR / f"{video_path.stem}_mosaic_raw.mp4"
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    out = cv2.VideoWriter(str(out_path), fourcc, fps, (w, h))
+    out = cv2.VideoWriter(str(raw_path), fourcc, fps, (w, h))
 
     while True:
         ok, frame = cap.read()
@@ -139,6 +141,24 @@ def apply_face_mosaic(video_path: Path) -> Path:
 
     cap.release()
     out.release()
+
+    # ブラウザ再生可能な H.264 に再エンコード（+faststart でストリーミング対応）
+    out_path = TEMP_DIR / f"{video_path.stem}_mosaic.mp4"
+    result = subprocess.run(
+        [
+            "ffmpeg", "-y", "-i", str(raw_path),
+            "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+            "-movflags", "+faststart",
+            "-an",
+            str(out_path),
+        ],
+        capture_output=True,
+    )
+    raw_path.unlink(missing_ok=True)
+
+    if result.returncode != 0 or not out_path.exists():
+        raise RuntimeError(f"ffmpeg re-encode failed: {result.stderr.decode()}")
+
     return out_path
 
 
