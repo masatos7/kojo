@@ -24,12 +24,13 @@ st.markdown('<h2>動画でアドバイスをもらう</h2>', unsafe_allow_html=T
 st.markdown('<p class="subtitle">動画をアップロードすると、AIがフォームや技術を分析して具体的なアドバイスを提供します。</p>', unsafe_allow_html=True)
 st.markdown('<hr class="inner-divider">', unsafe_allow_html=True)
 
-SPORTS = ["サッカー", "野球", "短距離走（かけっこ）", "長距離走（マラソン）", "逆上がり", "ゴルフ", "トランポリン", "体操", "ダンス", "ピアノ", "ギター"]
+SPORTS = ["サッカー", "野球", "短距離走（かけっこ）", "長距離走（マラソン）", "逆上がり", "跳び箱", "ゴルフ", "トランポリン", "体操", "ダンス", "ピアノ", "ギター"]
 AGE_LABELS = ["未就学児", "小学生", "中学生", "高校生", "大学生", "社会人"]
 
 with st.form("upload_form"):
     sport = st.selectbox("スポーツを選択", SPORTS)
-    age = st.selectbox("年齢層を選択", AGE_LABELS)
+    age = st.selectbox("アドバイスを受ける人の年齢層", AGE_LABELS)
+    st.caption("年齢層に合わせた言葉でアドバイスを作成します")
     video_file = st.file_uploader(
         "動画ファイルをアップロード",
         type=["mp4", "mov", "avi", "webm", "mkv"],
