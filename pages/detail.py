@@ -71,6 +71,17 @@ else:
 
 st.markdown('<hr class="inner-divider">', unsafe_allow_html=True)
 
+sport = advice.get("sport", "")
+if sport:
+    st.markdown(
+        f'<a data-nav="/guides?sport={sport}" style="display:inline-block;'
+        f'background:#f1f5f9;border:1px solid #e5e7eb;border-radius:8px;'
+        f'padding:.7rem 1.2rem;font-size:.9rem;font-weight:600;color:#1e3a5f;'
+        f'text-decoration:none;margin-bottom:1rem;">'
+        f'📚 {sport} の練習ガイドを見る →</a>',
+        unsafe_allow_html=True,
+    )
+
 if st.button("← ホームへ戻る"):
     st.switch_page("app.py")
 

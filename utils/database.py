@@ -40,3 +40,22 @@ def get_all_advice():
 
 def delete_advice(advice_id):
     _sb().table("advice").delete().eq("id", advice_id).execute()
+
+
+def get_all_guides():
+    result = _sb().table("sport_guides").select("sport").execute()
+    return [r["sport"] for r in result.data]
+
+
+def get_guide_by_sport(sport):
+    result = _sb().table("sport_guides").select("*").eq("sport", sport).execute()
+    return result.data[0] if result.data else None
+
+
+def upsert_guide(sport, common_mistakes, practice_methods, tips):
+    _sb().table("sport_guides").upsert({
+        "sport": sport,
+        "common_mistakes": common_mistakes,
+        "practice_methods": practice_methods,
+        "tips": tips,
+    }, on_conflict="sport").execute()

@@ -1,6 +1,7 @@
 import time
 from pathlib import Path
 import google.generativeai as genai
+from google.api_core.exceptions import ResourceExhausted
 
 SPORT_LABELS = {
     "サッカー": "サッカー",
@@ -49,6 +50,19 @@ LANGUAGE_HINTS = {
 }
 
 
+def _generate_with_retry(model, content, max_retries: int = 3):
+    delay = 5
+    for attempt in range(max_retries + 1):
+        try:
+            return model.generate_content(content)
+        except ResourceExhausted as e:
+            if attempt >= max_retries:
+                raise
+            time.sleep(delay)
+            delay *= 2
+    raise RuntimeError("到達不能")
+
+
 def analyze_video(api_key: str, video_path: Path, sport: str, age_label: str) -> tuple[str, str]:
     genai.configure(api_key=api_key)
 
@@ -87,7 +101,7 @@ def analyze_video(api_key: str, video_path: Path, sport: str, age_label: str) ->
 """
 
     model = genai.GenerativeModel("gemini-2.5-flash-lite")
-    response = model.generate_content([video_file, prompt])
+    response = _generate_with_retry(model, [video_file, prompt])
 
     full_text = response.text
     # アドバイスと練習メニューを分割

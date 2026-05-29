@@ -3,78 +3,107 @@ import streamlit.components.v1 as components
 
 _CSS = """
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
 [data-testid="stSidebar"],
 [data-testid="stSidebarCollapsedControl"] { display: none !important; }
 [data-testid="stHeader"], .stAppHeader {
     background: transparent !important; height: 0 !important;
     pointer-events: none !important; z-index: 0 !important;
 }
-[data-testid="stAppViewContainer"] { background: #ffffff !important; }
-.stMainBlockContainer { padding: 60px 0 0 0 !important; max-width: 100% !important; }
+[data-testid="stAppViewContainer"] { background: #f8fafc !important; }
+.stMainBlockContainer {
+    padding: 60px 0 0 0 !important;
+    max-width: 100% !important;
+    font-family: 'Inter', sans-serif !important;
+}
 [data-testid="stVerticalBlock"] { gap: 0 !important; }
 [data-testid="stVerticalBlockWithBorder"] { padding: 0 !important; }
 
+/* ── ヒーロー ── */
 .hero {
-    background: linear-gradient(140deg, #0f172a 0%, #1e3a5f 60%, #164e63 100%);
-    padding: 7rem 2rem 6rem; text-align: center;
+    background: #ffffff;
+    padding: 6rem 2rem 5.5rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
 }
 .hero h1 {
-    font-size: 4.5rem; font-weight: 900; color: #ffffff;
-    letter-spacing: .12em; margin: 0 0 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 4.8rem; font-weight: 900; color: #0f172a;
+    letter-spacing: -.02em; margin: 0 0 1.2rem;
+    line-height: 1.05;
 }
-.hero p { font-size: 1.1rem; color: #ffffff; margin-bottom: 2.5rem; line-height: 1.9; }
-.hero b { color: #e2e8f0; }
-/* data-nav はブラウザデフォルトの下線を除去 */
+.hero h1 span { color: #2563eb; }
+.hero p {
+    font-size: 1.05rem; color: #64748b;
+    margin-bottom: 2.8rem; line-height: 1.9;
+}
+.hero b { color: #0f172a; }
 [data-nav] { text-decoration: none !important; }
 
 .hero-btn {
-    display: inline-block; background: #ff0808; color: #fff !important;
-    text-decoration: none !important; padding: .9rem 2.2rem; border-radius: 8px;
-    font-size: 1rem; font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0,0,0,.35);
+    display: inline-block; background: #2563eb; color: #fff !important;
+    text-decoration: none !important; padding: .95rem 2.4rem; border-radius: 8px;
+    font-size: .95rem; font-weight: 700; letter-spacing: .01em;
+    box-shadow: 0 4px 14px rgba(37,99,235,.35);
     transition: background .2s, transform .1s, box-shadow .2s;
     cursor: pointer;
 }
 .hero-btn:hover {
-    background: #ff9b42; transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,.45);
+    background: #1d4ed8; transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37,99,235,.45);
 }
 
-.gallery-section { background: #f1f5f9; padding: 3.5rem 2.5rem 5rem; }
-.gallery-section h2 { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 1.2rem; }
+/* ── ギャラリー ── */
+.gallery-section {
+    background: #f8fafc;
+    padding: 4rem 2.5rem 5rem;
+}
+.gallery-section h2 {
+    font-size: 1.5rem; font-weight: 800; color: #0f172a;
+    letter-spacing: -.01em; margin: 0 0 1.5rem;
+}
 
-/* フィルターボックス */
+/* ── フィルター ── */
 .filter-box {
     display: flex; flex-direction: column; align-items: center;
-    margin-bottom: 1.8rem;
+    margin-bottom: 2rem;
     border: 1px solid #e5e7eb; border-radius: 12px;
-    padding: 1rem 1.5rem; background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    padding: 1rem 1.5rem; background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
 }
 .filter-label {
-    font-size: .78rem; font-weight: 700; color: #64748b;
-    letter-spacing: .08em; text-transform: uppercase;
-    margin-bottom: .6rem;
+    font-size: .72rem; font-weight: 700; color: #94a3b8;
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: .6rem;
 }
 .filter-bar { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; }
 .filter-bar select {
     padding: .45rem .9rem; border-radius: 8px;
     border: 1px solid #e5e7eb; background: #fff;
     font-size: .85rem; color: #374151; cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    font-family: 'Inter', sans-serif;
 }
 .filter-bar select:focus { outline: 2px solid #2563eb; outline-offset: 1px; }
 
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; }
+/* ── カード ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.2rem; }
 .card {
-    background: #ffffff; border-radius: 12px; overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08); text-decoration: none;
-    color: inherit; display: block; transition: box-shadow .2s, transform .15s;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    text-decoration: none; color: inherit; display: block;
+    transition: border-color .2s, transform .15s, box-shadow .2s;
     cursor: pointer;
 }
-.card:hover { box-shadow: 0 6px 16px rgba(0,0,0,.12); transform: translateY(-3px); }
+.card:hover {
+    border-color: #2563eb;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(37,99,235,.1);
+}
 
-/* サムネールオーバーレイ */
 .card-thumb { position: relative; }
 .card-thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
 .card-thumb-overlay {
@@ -86,14 +115,15 @@ _CSS = """
 .overlay-sport { color: #fff; font-size: .85rem; font-weight: 700; }
 .overlay-age   { color: #cbd5e1; font-size: .78rem; }
 
-.card-body { padding: .8rem 1.2rem; }
-.card-meta  { color: #64748b; font-size: .82rem; display: block; }
-.card-link  { color: #2563eb; font-size: .85rem; font-weight: 500; display: block; margin-top: .4rem; }
-.gallery-empty { text-align: center; color: #64748b; padding: 3rem 0; font-size: .95rem; }
+.card-body { padding: .9rem 1.2rem; }
+.card-meta  { color: #94a3b8; font-size: .8rem; display: block; }
+.card-link  { color: #2563eb; font-size: .85rem; font-weight: 600; display: block; margin-top: .4rem; }
+.gallery-empty { text-align: center; color: #94a3b8; padding: 3rem 0; font-size: .95rem; }
 
+/* ── インナーページ共通 ── */
 .inner-wrap { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 .inner-wrap h1 { color: #0f172a; font-size: 1.8rem; font-weight: 800; margin-bottom: .4rem; }
-.inner-wrap .subtitle { color: #64748b; margin-bottom: 1.5rem; }
+.subtitle { color: #64748b !important; }
 hr.inner-divider { border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
 </style>
 """
@@ -109,30 +139,50 @@ def render_header():
 <head>
 <meta charset="utf-8">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:60px;overflow:hidden;background:#ffffff}
 header{
   height:60px;width:100%;display:flex;align-items:center;padding:0 2.5rem;
-  background:#ffffff;border-bottom:1px solid #e5e7eb;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#ffffff;border-bottom:1px solid #f1f5f9;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
   position:relative;
 }
-.logo{font-size:1.4rem;font-weight:800;color:#0f172a;
-  cursor:pointer;letter-spacing:.1em;user-select:none;flex-shrink:0}
+.logo{
+  font-size:1.3rem;font-weight:800;color:#0f172a;
+  cursor:pointer;letter-spacing:.06em;user-select:none;flex-shrink:0;
+}
+.logo span{color:#2563eb}
 .logo:hover{color:#2563eb}
 nav{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-nav span{margin:0 .9rem;font-size:.9rem;font-weight:500;
-  color:#4b5563;cursor:pointer;user-select:none}
-nav span:hover{color:#2563eb}
+nav a{
+  margin:0 1rem;font-size:.88rem;font-weight:600;
+  color:#64748b;cursor:pointer;user-select:none;
+  text-decoration:none;transition:color .15s;
+}
+nav a:hover{color:#0f172a}
+.upload-btn{
+  margin-left:auto;
+  background:#2563eb;color:#fff !important;
+  font-size:.82rem;font-weight:700;
+  padding:.45rem 1.1rem;border-radius:7px;
+  cursor:pointer;border:none;
+  font-family:'Inter',sans-serif;
+  text-decoration:none;
+  transition:background .15s;
+  flex-shrink:0;
+}
+.upload-btn:hover{background:#1d4ed8}
 </style>
 </head>
 <body>
 <header>
-  <span class="logo" onclick="go('/')">KOJO</span>
+  <span class="logo" onclick="go('/')">KO<span>J</span>O</span>
   <nav>
-    <span onclick="go('/')">ホーム</span>
-    <span onclick="go('/upload')">動画を投稿</span>
+    <a onclick="go('/')">ホーム</a>
+    <a onclick="go('/guides')">練習ガイド</a>
   </nav>
+  <span class="upload-btn" onclick="go('/upload')">動画を投稿</span>
 </header>
 <script>
 function go(u){
@@ -144,7 +194,6 @@ function go(u){
     window.parent.document.body.removeChild(a);
   }catch(e){}
 }
-// data-nav クリックハンドラ（hero・card用）
 (function(){
   try{
     var pdoc=window.parent.document;
@@ -157,7 +206,6 @@ function go(u){
       a.href=el.dataset.nav; a.style.display='none';
       pdoc.body.appendChild(a); a.click(); pdoc.body.removeChild(a);
     });
-    // data-filter select changeハンドラ（フィルター用）
     pdoc.addEventListener('change',function(e){
       var el=e.target;
       if(!el.dataset||!el.dataset.filter) return;
@@ -170,7 +218,6 @@ function go(u){
     });
   }catch(e){}
 })();
-// iframeコンテナを fixed ヘッダーとして固定
 (function(){
   try{
     var ifr=window.frameElement;
